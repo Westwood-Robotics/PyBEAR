@@ -1,0 +1,14 @@
+# Move rules file into /etc/udev/rules.d/ with 'sudo cp'
+# Run 'sudo udevadm control --reload' in terminal to process the rules files
+# You will have a symlink that is: '/dev/serial#', in which the serial# is the serial of the usb dangle
+
+# For example, a USB2BEAR with serial number UB005A will be: /dev/UB005A
+# USB2RoMeLa from RoMeLa has 3 digit hexadecimal serial numbers.
+# USB2BEAR from Westwood Robotics has 4 digit hexadecimal serial numbers.
+
+# Use udevadm to get detailed info of your device.
+# For example, if your device is ttyUSB0, you can try: 'udevadm info --attribute-walk -n /dev/ttyUSB0'
+
+SUBSYSTEM=="tty", ATTRS{product}=="USB2RoMeLa_Boosted", SYMLINK="%s{serial}"
+SUBSYSTEM=="tty", ATTRS{product}=="USB2BEAR_Boosted", SYMLINK="%s{serial}"
+
