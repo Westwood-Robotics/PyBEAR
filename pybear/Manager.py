@@ -21,7 +21,7 @@ __email__ = "info@westwoodrobotics.net"
 __copyright__ = "Copyright 2020 Westwood Robotics"
 __date__ = "Jan. 01, 2020"
 
-__version__ = "0.0.1"
+__version__ = "0.0.3"
 __status__ = "Prototype"
 
 import os
@@ -239,24 +239,28 @@ class BEAR(Packet.PKT):
     def set_limit_position_max(self, *argv):
         self.multi_write_cfg_data(CFG_REG.LIMIT_POS_MAX, argv)
 
-    # Not implemented yet
-    # def get_min_voltage(self, m_id):
-    #     return self.read_cfg_data(m_id, CFG_REG.MIN_VOLTAGE)
-    #
-    # def set_min_voltage(self, m_id, val):
-    #     self.write_cfg_data(m_id, CFG_REG.MIN_VOLTAGE, val)
-    #
-    # def get_max_voltage(self, m_id):
-    #     return self.read_cfg_data(m_id, CFG_REG.MAX_VOLTAGE)
-    #
-    # def set_max_voltage(self, m_id, val):
-    #     self.write_cfg_data(m_id, CFG_REG.MAX_VOLTAGE, val)
+    def get_min_voltage(self, *argv):
+        return [self.read_cfg_data(argv[idx], CFG_REG.MIN_VOLTAGE) for idx in range(len(argv))]
 
-    def get_low_voltage_warning(self, *argv):
-        return [self.read_cfg_data(argv[idx], CFG_REG.LOW_VOLTAGE_WARNING) for idx in range(len(argv))]
+    def set_min_voltage(self, *argv):
+        self.multi_write_cfg_data(CFG_REG.MIN_VOLTAGE, argv)
 
-    def set_low_voltage_warning(self, *argv):
-        self.multi_write_cfg_data(CFG_REG.LOW_VOLTAGE_WARNING, argv)
+    def get_max_voltage(self, *argv):
+        return [self.read_cfg_data(argv[idx], CFG_REG.MAX_VOLTAGE) for idx in range(len(argv))]
+
+    def set_max_voltage(self, *argv):
+        self.multi_write_cfg_data(CFG_REG.MAX_VOLTAGE, argv)
+
+    # def get_low_voltage_warning(self, *argv):
+    #     return [self.read_cfg_data(argv[idx], CFG_REG.LOW_VOLTAGE_WARNING) for idx in range(len(argv))]
+    #
+    # def set_low_voltage_warning(self, *argv):
+    #     self.multi_write_cfg_data(CFG_REG.LOW_VOLTAGE_WARNING, argv)
+    def get_watchdog_timeout(self, *argv):
+        return [self.read_cfg_data(argv[idx], CFG_REG.WATCHDOG_TIMEOUT) for idx in range(len(argv))]
+
+    def set_watchdog_timeout(self, *argv):
+        self.multi_write_cfg_data(CFG_REG.WATCHDOG_TIMEOUT, argv)
 
     def get_temp_limit_low(self, *argv):
         return [self.read_cfg_data(argv[idx], CFG_REG.TEMP_LIMIT_LOW) for idx in range(len(argv))]
@@ -276,9 +280,15 @@ class BEAR(Packet.PKT):
     def set_bulk_config(self, *argv):
         self.multi_write_bulk_cfg_data(argv)
 
-
     # =================================================================================================================
     # ===== Status Registers
+    def ping(self, *argv: int):
+        """
+        Function used to detect BEAR(s). Will return firmware and hardware version info.
+        Return None if pinging unsuccessful.
+        """
+        return [self._ping(i) for i in argv]
+
     def get_torque_enable(self, *argv):
         return [self.read_status_data(argv[idx], STAT_REG.TORQUE_ENABLE) for idx in range(len(argv))]
 

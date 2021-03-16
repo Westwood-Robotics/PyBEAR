@@ -21,7 +21,7 @@ __email__ = "info@westwoodrobotics.net"
 __copyright__ = "Copyright 2020 Westwood Robotics"
 __date__ = "Jan. 01, 2020"
 
-__version__ = "0.0.1"
+__version__ = "0.0.3"
 __status__ = "Prototype"
 
 import pdb
@@ -494,9 +494,10 @@ class PKT(object):
             addr_list.append(STAT_REG_DIC[argv[idx]])
         return self.__read_bulk_data(m_id, addr_list, reg_type='stat', data_type='f32')
 
-    def ping(self, m_id):
+    def _ping(self, m_id):
         """
-        Function used to detect a motor. Will return an empty return packet.
+        Function used to detect a motor. Will return firmware and hardware version info.
+        Return None if pinging unsuccessful.
         """
         # Type of instruction
         instruction = INSTRUCTION.PING
@@ -518,9 +519,9 @@ class PKT(object):
                 pass
 
         # Read status
-        ping_status, _ = self.__read_packet(m_id)
+        ping_status, error_code = self.__read_packet(m_id)
 
-        return ping_status
+        return ping_status, error_code
 
     def save_config(self, m_id):
         instruction = INSTRUCTION.SAVE_CFG

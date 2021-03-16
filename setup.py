@@ -19,8 +19,8 @@ from distutils.core import setup
 
 setup(
         name='PyBEAR',
-        version='0.0.2',
+        version='0.0.3',
         author='Westwood Robotics Corporation',
-        author_email='info@westwoodrobotics.net',
+        author_email='info@westwoodrobotics.io',
         packages=['pybear'],
 )
