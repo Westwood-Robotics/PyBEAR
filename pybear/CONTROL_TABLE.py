@@ -22,71 +22,75 @@ __email__ = "info@westwoodrobotics.net"
 __copyright__ = "Copyright 2020 Westwood Robotics"
 __date__ = "Jan. 01, 2020"
 
-__version__ = "0.0.1"
+__version__ = "0.0.3"
 __status__ = "Prototype"
 
 """
 Control Table
 """
 
+
 class INSTRUCTION:
-	"""
+    """
 	Instruction Constants
 	---------------------
 	This is the field that defines the purpose of the Packet.
 	"""
-	PING = 0x01
-	READ_STAT = 0x02
-	WRITE_STAT = 0x03
-	READ_CFG = 0x04
-	WRITE_CFG = 0x05
-	SAVE_CFG = 0x06
-	BULK_COMM = 0x12
-	# ACTION = 0x05
-	# FACTORY_RESET = 0x06
-	# REBOOT = 0x08
-	# STATUS_RETURN = 0x55
-	# SYNC_READ = 0x82
-	# SYNC_WRITE = 0x83
-	# BULK_READ = 0x92
-	# BULK_WRITE = 0x93
+    PING = 0x01
+    READ_STAT = 0x02
+    WRITE_STAT = 0x03
+    READ_CFG = 0x04
+    WRITE_CFG = 0x05
+    SAVE_CFG = 0x06
+    BULK_COMM = 0x12
+# ACTION = 0x05
+# FACTORY_RESET = 0x06
+# REBOOT = 0x08
+# STATUS_RETURN = 0x55
+# SYNC_READ = 0x82
+# SYNC_WRITE = 0x83
+# BULK_READ = 0x92
+# BULK_WRITE = 0x93
+
 
 class CFG_REG:
-	"""Configuration Registers"""
-	ID = 0x00
-	MODE = 0x01
-	BAUDRATE = 0x02
-	HOMING_OFFSET = 0x03
-	# Gains for Id current loop
-	P_GAIN_ID = 0x04
-	I_GAIN_ID = 0x05
-	D_GAIN_ID = 0x06
-	# Gains for Iq current loop
-	P_GAIN_IQ = 0x07
-	I_GAIN_IQ = 0x08
-	D_GAIN_IQ = 0x09
-	# Gains for velocity loop
-	P_GAIN_VEL = 0x0A
-	I_GAIN_VEL = 0x0B
-	D_GAIN_VEL = 0x0C
-	# Gains for position loop
-	P_GAIN_POS = 0x0D
-	I_GAIN_POS = 0x0E
-	D_GAIN_POS = 0x0F
-	# Gains for direct force loop
-	P_GAIN_FORCE = 0x10
-	I_GAIN_FORCE = 0x11
-	D_GAIN_FORCE = 0x12
-	LIMIT_ID_MAX = 0x13
-	LIMIT_IQ_MAX = 0x14
-	LIMIT_VEL_MAX = 0x15
-	LIMIT_POS_MIN = 0x16
-	LIMIT_POS_MAX = 0x17
-	MIN_VOLTAGE = 0x18
-	MAX_VOLTAGE = 0x19
-	LOW_VOLTAGE_WARNING = 0x1A
-	TEMP_LIMIT_LOW = 0x1B # Motor will start to limit power
-	TEMP_LIMIT_HIGH = 0x1C # Motor will shutdown
+    """Configuration Registers"""
+    ID = 0x00
+    MODE = 0x01
+    BAUDRATE = 0x02
+    HOMING_OFFSET = 0x03
+    # Gains for Id current loop
+    P_GAIN_ID = 0x04
+    I_GAIN_ID = 0x05
+    D_GAIN_ID = 0x06
+    # Gains for Iq current loop
+    P_GAIN_IQ = 0x07
+    I_GAIN_IQ = 0x08
+    D_GAIN_IQ = 0x09
+    # Gains for velocity loop
+    P_GAIN_VEL = 0x0A
+    I_GAIN_VEL = 0x0B
+    D_GAIN_VEL = 0x0C
+    # Gains for position loop
+    P_GAIN_POS = 0x0D
+    I_GAIN_POS = 0x0E
+    D_GAIN_POS = 0x0F
+    # Gains for direct force loop
+    P_GAIN_FORCE = 0x10
+    I_GAIN_FORCE = 0x11
+    D_GAIN_FORCE = 0x12
+    LIMIT_ID_MAX = 0x13
+    LIMIT_IQ_MAX = 0x14
+    LIMIT_VEL_MAX = 0x15
+    LIMIT_POS_MIN = 0x16
+    LIMIT_POS_MAX = 0x17
+    MIN_VOLTAGE = 0x18
+    MAX_VOLTAGE = 0x19
+    # LOW_VOLTAGE_WARNING = 0x1A
+    WATCHDOG_TIMEOUT = 0x1A
+    TEMP_LIMIT_LOW = 0x1B  # Motor will start to limit power
+    TEMP_LIMIT_HIGH = 0x1C  # Motor will shutdown
+
 
 CFG_REG_DIC = {'id': CFG_REG.ID,
                'mode': CFG_REG.MODE,
@@ -114,28 +118,31 @@ CFG_REG_DIC = {'id': CFG_REG.ID,
                'limit_position_max': CFG_REG.LIMIT_POS_MAX,
                'min_voltage': CFG_REG.MIN_VOLTAGE,
                'max_voltage': CFG_REG.MAX_VOLTAGE,
-               'low_voltage_warning': CFG_REG.LOW_VOLTAGE_WARNING,
+               # 'low_voltage_warning': CFG_REG.LOW_VOLTAGE_WARNING,
+               'watchdog_timeout': CFG_REG.WATCHDOG_TIMEOUT,
                'temp_limit_low': CFG_REG.TEMP_LIMIT_LOW,
                'temp_limit_high': CFG_REG.TEMP_LIMIT_HIGH}
 
+
 class STAT_REG:
-	"""Status Registers"""
-	TORQUE_ENABLE = 0x00 # Enable output
-	HOMING_COMPLETE = 0x01
-	GOAL_ID = 0x02
-	GOAL_IQ = 0x03
-	GOAL_VEL = 0x04
-	GOAL_POS = 0x05
-	PRESENT_ID = 0x06
-	PRESENT_IQ = 0x07
-	PRESENT_VEL = 0x08
-	PRESENT_POS = 0x09
-	INPUT_VOLTAGE = 0x0A
-	WINDING_TEMP = 0x0B
-	POWERSTAGE_TEMP = 0x0C
-	IC_TEMP = 0x0D
-	ERROR_STATUS = 0x0E
-	WARNING_STATUS = 0x0F
+    """Status Registers"""
+    TORQUE_ENABLE = 0x00  # Enable output
+    HOMING_COMPLETE = 0x01
+    GOAL_ID = 0x02
+    GOAL_IQ = 0x03
+    GOAL_VEL = 0x04
+    GOAL_POS = 0x05
+    PRESENT_ID = 0x06
+    PRESENT_IQ = 0x07
+    PRESENT_VEL = 0x08
+    PRESENT_POS = 0x09
+    INPUT_VOLTAGE = 0x0A
+    WINDING_TEMP = 0x0B
+    POWERSTAGE_TEMP = 0x0C
+    IC_TEMP = 0x0D
+    ERROR_STATUS = 0x0E
+    WARNING_STATUS = 0x0F
+
 
 STAT_REG_DIC = {'torque_enable': STAT_REG.TORQUE_ENABLE,
                 'homing_complete': STAT_REG.HOMING_COMPLETE,
