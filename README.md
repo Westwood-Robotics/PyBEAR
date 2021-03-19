@@ -42,30 +42,19 @@ sudo usermod -a -G dialout your_username
 pip install numpy pyserial
 ```
 
-3. Run installation on your local Python installation or your virtual environment.
+3. CD into PyBEAR/ directory and use pip/pip3 to install the package.
+
+Python2
 ```bash
-python setup.py install
+pip install .
+```
+
+Python3
+```bash
+pip3 install .
 ```
 4. Enjoy!
 
-## Example
-```python
-# Import Manager from PyBEAR
-from pybear import Manager
-
-# Create a serial port object
-bear = Manager.BEAR(port='/dev/ttyUSB0', baudrate=8000000)
-
-# Enable torque
-bear.set_torque_enable((1,1))
-
-# Enable multiple torques
-bear.set_torque_enable((1,1), (2,1))
-
-# Enable Direct Force mode
-bear.set_mode(1,3)
-
-# Apply Direct Force D gain
-bear.set_d_gain_direct_force((1,0.1))
-```
+## SDK Manual
+Download the latest SDK Manual from www.westwoodrobotics.io for detailed instructions, helpful tips and various examples.
 
