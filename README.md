@@ -37,12 +37,7 @@ sudo chown -R your_username /usr/local
 sudo usermod -a -G dialout your_username
 ```
 
-2. Install dependencies.
-```bash
-pip install numpy pyserial
-```
-
-3. CD into PyBEAR/ directory and use pip/pip3 to install the package.
+2. CD into PyBEAR/ directory and use pip/pip3 to install the package.
 
 Python2
 ```bash
@@ -53,6 +48,17 @@ Python3
 ```bash
 pip3 install .
 ```
+3.Make sure pyserial and numpy are installed. You can check this by running 
+```bash
+pip show pyserial numpy
+```
+or 
+```bash
+pip3 show pyserial numpy
+```
+
+Othewise, install the missing package(s).
+
 4. Enjoy!
 
 ## SDK Manual
