@@ -101,12 +101,12 @@ class PKT(object):
         status_packet.extend(self.ser.read(4))
         if status_packet:
             extlen = self.ord_adapt(status_packet[3])
-            while self.ser.inWaiting() < extlen:
+            while self.ser.in_waiting() < extlen:
                 pass
             status_packet.extend(self.ser.read(extlen))
             # Temporary absolute error watch:
-            if len(status_packet) < 7:
-                print("Debug __read_packet, status_packet length is only", len(status_packet))
+            if len(status_packet) < (status_packet[3]+4):
+                print("ser.read() returned too soon, status_packet length is only", len(status_packet))
                 print("extlen is:", extlen)
                 error_code = 0b10000001
                 status_packet = [self.ord_adapt(idx) for idx in status_packet[5:-1]]
@@ -267,7 +267,7 @@ class PKT(object):
         # Timeout prevention if communication error starts occuring
         t_bus_init = time.time()
         while True:
-            if self.ser.inWaiting() > 7:
+            if self.ser.in_waiting() > 7:
                 break
             if time.time() - t_bus_init > TIMEOUT_MAX:
                 print("[PyBEAR | WARNING] :: Status response timed out. Re-sending the same packet.")
@@ -302,7 +302,7 @@ class PKT(object):
 
         self.__write_packet(packet)
 
-        while self.ser.inWaiting() < 4:
+        while self.ser.in_waiting() < 4:
             pass
 
         # status = self.__read_bulk_packet(m_id)
@@ -395,7 +395,7 @@ class PKT(object):
             self.__write_packet(packet)
             found_packet = True
 
-            while self.ser.inWaiting() < 4:
+            while self.ser.in_waiting() < 4:
                 if self._bulk_timeout is None:
                     pass
                 elif time.time() - t0 > self._bulk_timeout:
@@ -410,11 +410,11 @@ class PKT(object):
                     retlen = ord(status_packet[3])  # length of the data in a single packet
                     totlen = retlen + (4+retlen)*(len(m_ids)-1)  # total length of all data coming back
                     found_data = True
-                    while self.ser.inWaiting() < totlen:
+                    while self.ser.in_waiting() < totlen:
                         if self._bulk_timeout is None:
                             pass
                         elif time.time() - t0 > self._bulk_timeout:
-                            buffer_length = self.ser.inWaiting()
+                            buffer_length = self.ser.in_waiting()
                             error_id = int((buffer_length - retlen)/(4+retlen)) + 2
                             found_data = False
                             break
@@ -511,7 +511,7 @@ class PKT(object):
         # Write packet
         self.__write_packet((0xFF, 0xFF, m_id, pkt_len, instruction, checksum))
         start_time = time.time()
-        while self.ser.inWaiting() < 1:
+        while self.ser.in_waiting() < 1:
             if time.time()- start_time > PING_TIMEOUT:
                 # Timeout
                 return None
