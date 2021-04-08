@@ -267,7 +267,7 @@ class PKT(object):
         # Timeout prevention if communication error starts occuring
         t_bus_init = time.time()
         while True:
-            if self.ser.in_waiting() > 7:
+            if self.ser.in_waiting() > 6:
                 break
             if time.time() - t_bus_init > TIMEOUT_MAX:
                 print("[PyBEAR | WARNING] :: Status response timed out. Re-sending the same packet.")
