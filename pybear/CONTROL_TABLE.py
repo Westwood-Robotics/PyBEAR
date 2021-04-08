@@ -32,10 +32,10 @@ Control Table
 
 class INSTRUCTION:
     """
-	Instruction Constants
-	---------------------
-	This is the field that defines the purpose of the Packet.
-	"""
+    Instruction Constants
+    ---------------------
+    This is the field that defines the purpose of the Packet.
+    """
     PING = 0x01
     READ_STAT = 0x02
     WRITE_STAT = 0x03
@@ -43,14 +43,6 @@ class INSTRUCTION:
     WRITE_CFG = 0x05
     SAVE_CFG = 0x06
     BULK_COMM = 0x12
-# ACTION = 0x05
-# FACTORY_RESET = 0x06
-# REBOOT = 0x08
-# STATUS_RETURN = 0x55
-# SYNC_READ = 0x82
-# SYNC_WRITE = 0x83
-# BULK_READ = 0x92
-# BULK_WRITE = 0x93
 
 
 class CFG_REG:
