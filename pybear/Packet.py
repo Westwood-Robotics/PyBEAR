@@ -127,7 +127,7 @@ class PKT(object):
         elif reg_type == 'stat':
             instruction = INSTRUCTION.WRITE_STAT
 
-        if add_list > 2 and reg_type == 'cfg' or add_list > 1 and reg_type == 'stat':
+        if (add_list not in CFG_REG.UINT_REG and reg_type == 'cfg') or (add_list > 1 and reg_type == 'stat'):
             data = self.__float32_to_hex(data)
             data = [data[i:i+2] for i in range(2,len(data),2)]
             data = tuple([int(x, 16) for x in data])
@@ -167,7 +167,7 @@ class PKT(object):
     def multi_write_cfg_data(self, add, data):
         """
         Convenient loop function for writing to multiple motors and to a single register.
-        # TODO: To be merged into self.write_cfg_data() and deprecated.
+        # TODO: To be merged into self.write_cfg_data() and deprecated. (WHY?)
         """
         for idx in range(len(data)):
             self.write_cfg_data(data[idx][0], add, data[idx][1])
@@ -212,7 +212,6 @@ class PKT(object):
         n_adpair = len(adpair)//2 # Identify the number of registers to write to
         adpair_hex = []
 
-
         for idx in range(n_adpair):
             idx_ptr = 2*idx
             if reg_type == 'cfg':
@@ -221,7 +220,9 @@ class PKT(object):
                 addr = STAT_REG_DIC[adpair[idx_ptr]]
 
             data = adpair[idx_ptr+1]
-            if addr > 2 and reg_type == 'cfg' or addr > 1 and reg_type == 'stat':
+
+            # if addr > 2 and reg_type == 'cfg' or addr > 1 and reg_type == 'stat':
+            if (addr not in CFG_REG.UINT_REG and reg_type == 'cfg') or (addr > 1 and reg_type == 'stat'):
                 data = self.__float32_to_hex(data)
                 data = [data[i:i+2] for i in range(2,len(data),2)]
                 data = [int(x, 16) for x in data]
@@ -460,7 +461,7 @@ class PKT(object):
         """
         This command is to read data from the configuration registers.
         """
-        if add_list > 2:
+        if add_list not in CFG_REG.UINT_REG:
             return self.__read_data(m_id, add_list, reg_type='cfg', data_type='f32')
         else:
             return self.__read_data(m_id, add_list, reg_type='cfg', data_type='u32')

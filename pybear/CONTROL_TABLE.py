@@ -83,6 +83,8 @@ class CFG_REG:
     TEMP_LIMIT_LOW = 0x1B  # Motor will start to limit power
     TEMP_LIMIT_HIGH = 0x1C  # Motor will shutdown
 
+    UINT_REG = [ID, MODE, BAUDRATE, WATCHDOG_TIMEOUT]
+
 
 CFG_REG_DIC = {'id': CFG_REG.ID,
                'mode': CFG_REG.MODE,
