@@ -11,7 +11,7 @@ __status__ = "Prototype"
 
 from pybear import Manager
 
-bear = Manager.BEAR(port="COM18", baudrate=8000000)
+bear = Manager.BEAR(port="COM7", baudrate=8000000)
 m_id = int(input("Enter the present ID and press enter.\n"))
 print("Present ID entered is: %d" % m_id)
 if bear.ping(m_id):

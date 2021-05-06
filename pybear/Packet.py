@@ -101,12 +101,12 @@ class PKT(object):
         status_packet.extend(self.ser.read(4))
         if status_packet:
             extlen = self.ord_adapt(status_packet[3])
-            while self.ser.inWaiting() < extlen:
+            while self.ser.in_waiting < extlen:
                 pass
             status_packet.extend(self.ser.read(extlen))
             # Temporary absolute error watch:
-            if len(status_packet) < 7:
-                print("Debug __read_packet, status_packet length is only", len(status_packet))
+            if len(status_packet) < (status_packet[3]+4):
+                print("ser.read() returned too soon, status_packet length is only", len(status_packet))
                 print("extlen is:", extlen)
                 error_code = 0b10000001
                 status_packet = [self.ord_adapt(idx) for idx in status_packet[5:-1]]
@@ -127,7 +127,7 @@ class PKT(object):
         elif reg_type == 'stat':
             instruction = INSTRUCTION.WRITE_STAT
 
-        if add_list > 2 and reg_type == 'cfg' or add_list > 1 and reg_type == 'stat':
+        if (add_list not in CFG_REG.UINT_REG and reg_type == 'cfg') or (add_list > 1 and reg_type == 'stat'):
             data = self.__float32_to_hex(data)
             data = [data[i:i+2] for i in range(2,len(data),2)]
             data = tuple([int(x, 16) for x in data])
@@ -167,7 +167,7 @@ class PKT(object):
     def multi_write_cfg_data(self, add, data):
         """
         Convenient loop function for writing to multiple motors and to a single register.
-        # TODO: To be merged into self.write_cfg_data() and deprecated.
+        # TODO: To be merged into self.write_cfg_data() and deprecated. (WHY?)
         """
         for idx in range(len(data)):
             self.write_cfg_data(data[idx][0], add, data[idx][1])
@@ -212,7 +212,6 @@ class PKT(object):
         n_adpair = len(adpair)//2 # Identify the number of registers to write to
         adpair_hex = []
 
-
         for idx in range(n_adpair):
             idx_ptr = 2*idx
             if reg_type == 'cfg':
@@ -221,7 +220,9 @@ class PKT(object):
                 addr = STAT_REG_DIC[adpair[idx_ptr]]
 
             data = adpair[idx_ptr+1]
-            if addr > 2 and reg_type == 'cfg' or addr > 1 and reg_type == 'stat':
+
+            # if addr > 2 and reg_type == 'cfg' or addr > 1 and reg_type == 'stat':
+            if (addr not in CFG_REG.UINT_REG and reg_type == 'cfg') or (addr > 1 and reg_type == 'stat'):
                 data = self.__float32_to_hex(data)
                 data = [data[i:i+2] for i in range(2,len(data),2)]
                 data = [int(x, 16) for x in data]
@@ -267,7 +268,7 @@ class PKT(object):
         # Timeout prevention if communication error starts occuring
         t_bus_init = time.time()
         while True:
-            if self.ser.inWaiting() > 3:
+            if self.ser.in_waiting > 6:
                 break
             if time.time() - t_bus_init > TIMEOUT_MAX:
                 print("[PyBEAR | WARNING] :: Status response timed out. Re-sending the same packet.")
@@ -302,7 +303,7 @@ class PKT(object):
 
         self.__write_packet(packet)
 
-        while self.ser.inWaiting() < 4:
+        while self.ser.in_waiting < 4:
             pass
 
         # status = self.__read_bulk_packet(m_id)
@@ -395,7 +396,7 @@ class PKT(object):
             self.__write_packet(packet)
             found_packet = True
 
-            while self.ser.inWaiting() < 4:
+            while self.ser.in_waiting < 4:
                 if self._bulk_timeout is None:
                     pass
                 elif time.time() - t0 > self._bulk_timeout:
@@ -410,11 +411,11 @@ class PKT(object):
                     retlen = ord(status_packet[3])  # length of the data in a single packet
                     totlen = retlen + (4+retlen)*(len(m_ids)-1)  # total length of all data coming back
                     found_data = True
-                    while self.ser.inWaiting() < totlen:
+                    while self.ser.in_waiting < totlen:
                         if self._bulk_timeout is None:
                             pass
                         elif time.time() - t0 > self._bulk_timeout:
-                            buffer_length = self.ser.inWaiting()
+                            buffer_length = self.ser.in_waiting
                             error_id = int((buffer_length - retlen)/(4+retlen)) + 2
                             found_data = False
                             break
@@ -460,7 +461,7 @@ class PKT(object):
         """
         This command is to read data from the configuration registers.
         """
-        if add_list > 2:
+        if add_list not in CFG_REG.UINT_REG:
             return self.__read_data(m_id, add_list, reg_type='cfg', data_type='f32')
         else:
             return self.__read_data(m_id, add_list, reg_type='cfg', data_type='u32')
@@ -511,8 +512,8 @@ class PKT(object):
         # Write packet
         self.__write_packet((0xFF, 0xFF, m_id, pkt_len, instruction, checksum))
         start_time = time.time()
-        while self.ser.inWaiting() < 1:
-            if time.time()- start_time > PING_TIMEOUT:
+        while self.ser.in_waiting < 1:
+            if time.time() - start_time > PING_TIMEOUT:
                 # Timeout
                 return None
             else:
