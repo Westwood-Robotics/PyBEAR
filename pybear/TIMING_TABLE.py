@@ -24,7 +24,7 @@ __date__ = "Jan. 01, 2020"
 __version__ = "0.0.2"
 __status__ = "Prototype"
 
-TIMEOUT_MAX = 0.00025  # In seconds
+TIMEOUT_MAX = 0.001  # In seconds
 PING_TIMEOUT = 2*TIMEOUT_MAX
 
 #

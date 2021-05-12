@@ -28,6 +28,7 @@ import pdb
 import struct
 import time
 import sys
+import ctypes
 
 from itertools import chain
 
@@ -96,7 +97,6 @@ class PKT(object):
     #     return status_packet
 
     def __read_packet(self, motor_id):
-        # TODO: Should we use checksum to verify return?
         status_packet = []
         status_packet.extend(self.ser.read(4))
         if status_packet:
@@ -104,16 +104,15 @@ class PKT(object):
             while self.ser.in_waiting < extlen:
                 pass
             status_packet.extend(self.ser.read(extlen))
-            # Temporary absolute error watch:
-            if len(status_packet) < (status_packet[3]+4):
-                print("ser.read() returned too soon, status_packet length is only", len(status_packet))
-                print("extlen is:", extlen)
-                error_code = 0b10000001
-                status_packet = [self.ord_adapt(idx) for idx in status_packet[5:-1]]
-            else:
+            # Check for checksum
+            checksum = ctypes.c_ubyte(~(ctypes.c_ubyte(sum(status_packet[2:-1])).value))
+            if checksum.value == status_packet[-1]:
                 error_code = status_packet[4]
                 status_packet = [self.ord_adapt(idx) for idx in status_packet[5:-1]]
-        return status_packet, error_code
+                return status_packet, error_code
+            else:
+                # checksum is wrong
+                return None, None
 
     def __read_bulk_packet(self, motor_id):
         """
@@ -262,23 +261,29 @@ class PKT(object):
 
         # while self.ser.in_waiting > 0:
         #     self.ser.reset_input_buffer()
-        self.ser.reset_input_buffer()
-        self.__write_packet(packet)
 
-        # Timeout prevention if communication error starts occuring
-        t_bus_init = time.time()
         while True:
-            if self.ser.in_waiting > 6:
-                break
-            if time.time() - t_bus_init > TIMEOUT_MAX:
-                print("[PyBEAR | WARNING] :: Status response timed out. Re-sending the same packet.")
-                self.ser.reset_input_buffer()
-                self.__write_packet(packet)
-                t_bus_init = time.time()
-        # while self.ser.inWaiting() < 4:
-        #     pass
+            # Corrupted data prevention if checksum is wrong
+            # Timeout prevention if communication error starts occuring
+            self.ser.reset_input_buffer()
+            self.__write_packet(packet)
 
-        status, error_code = self.__read_packet(m_id)
+            t_bus_init = time.time()
+            while True:
+                if self.ser.in_waiting > 6:
+                    break
+                if time.time() - t_bus_init > TIMEOUT_MAX:
+                    print("[PyBEAR | WARNING] :: Status response timed out. Re-sending the same packet.")
+                    self.ser.reset_input_buffer()
+                    self.__write_packet(packet)
+                    t_bus_init = time.time()
+            status, error_code = self.__read_packet(m_id)
+            if error_code:
+                # checksum was right
+                break
+            else:
+                # checksum was wrong and __read_packet() returned None
+                print("[PyBEAR | WARNING] :: Data corrupted. Re-sending the same packet.")
 
         if data_type == 'f32':
             return self.__hex_to_float32(status), error_code
