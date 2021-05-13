@@ -120,25 +120,25 @@ class PKT(object):
         """
         pass
 
-    def __write_data(self, m_id, add_list, data, reg_type=None):
+    def __write_data(self, m_id, address, data, reg_type=None):
         if reg_type == 'cfg':
             instruction = INSTRUCTION.WRITE_CFG
         elif reg_type == 'stat':
             instruction = INSTRUCTION.WRITE_STAT
 
-        if (add_list not in CFG_REG.UINT_REG and reg_type == 'cfg') or (add_list > 1 and reg_type == 'stat'):
+        if (address not in CFG_REG.UINT_REG and reg_type == 'cfg') or (address > 1 and reg_type == 'stat'):
             data = self.__float32_to_hex(data)
             data = [data[i:i+2] for i in range(2,len(data),2)]
             data = tuple([int(x, 16) for x in data])
-            n_add = len((add_list,))+len((data))+2
-            checksum = self.chksum(m_id, n_add, instruction, (add_list, sum(data)))
+            n_add = len((address,))+len((data))+2
+            checksum = self.chksum(m_id, n_add, instruction, (address, sum(data)))
         else:
             data = (data & 0xFF, (data >> 8) & 0xFF, (data >> 16) & 0xFF, (data >> 24) & 0xFF)
-            n_add = len((add_list,))+len((data))+2
-            checksum = self.chksum(m_id, n_add, instruction, (add_list, sum(data)))
+            n_add = len((address,))+len((data))+2
+            checksum = self.chksum(m_id, n_add, instruction, (address, sum(data)))
 
         # Generate packet
-        packet = self.__packet_generator(m_id, n_add, instruction, add_list, data, checksum)
+        packet = self.__packet_generator(m_id, n_add, instruction, address, data, checksum)
 
         # Write packet
         self.__write_packet(packet)
@@ -253,7 +253,8 @@ class PKT(object):
         elif reg_type == 'stat':
             instruction = INSTRUCTION.READ_STAT
 
-        pkt_len = np.add(len((add_list,)), 2)
+        # pkt_len = np.add(len((add_list,)), 2)
+        pkt_len = len((add_list,))+2
 
         checksum = self.chksum(m_id, pkt_len, instruction, (add_list,))
 
@@ -288,8 +289,45 @@ class PKT(object):
         if data_type == 'f32':
             return self.__hex_to_float32(status), error_code
         elif data_type == 'u32':
-            return (status[0]+(status[1]<<8)+(status[2]<<16)+(status[3]<<24)), error_code
+            # return status[0]|status[1]<<8|status[2]<<16|status[3]<<24, error_code
+            return __hex_to_int32(status), error_code
 
+
+    # def __read_bulk_data(self, m_id, add_list, reg_type=None, data_type=None):
+    #     """
+    #     m_id: Motor id
+    #     add_list: List of register addresses to read
+    #     """
+    #     if reg_type == 'cfg':
+    #         instruction = INSTRUCTION.READ_CFG
+    #     elif reg_type == 'stat':
+    #         instruction = INSTRUCTION.READ_STAT
+    #
+    #     # pkt_len = np.add(len(add_list), 2)
+    #     pkt_len = len(add_list)+2
+    #
+    #     checksum = self.chksum(m_id, pkt_len, instruction, add_list)
+    #
+    #     packet = self.__packet_generator(m_id, pkt_len, instruction, add_list, None, checksum)
+    #
+    #     self.__write_packet(packet)
+    #
+    #     while self.ser.in_waiting < 4:
+    #         pass
+    #
+    #     # status = self.__read_bulk_packet(m_id)
+    #     status, error_code = self.__read_packet(m_id)
+    #
+    #     # Place holder for multiple reads later.
+    #     # read_val = status[3]
+    #
+    #     if data_type == 'f32':
+    #         # return self.__hex_to_float32(status[5:-1])
+    #         return self.__hex_to_float32(status), error_code
+    #     elif data_type == 'u32':
+    #         # return status[5]
+    #         return status[0], error_code
+    #
     def __read_bulk_data(self, m_id, add_list, reg_type=None, data_type=None):
         """
         m_id: Motor id
@@ -300,19 +338,39 @@ class PKT(object):
         elif reg_type == 'stat':
             instruction = INSTRUCTION.READ_STAT
 
-        pkt_len = np.add(len(add_list), 2)
+        # pkt_len = np.add(len(add_list), 2)
+        pkt_len = len(add_list)+2
 
         checksum = self.chksum(m_id, pkt_len, instruction, add_list)
 
         packet = self.__packet_generator(m_id, pkt_len, instruction, add_list, None, checksum)
 
-        self.__write_packet(packet)
+        while True:
 
-        while self.ser.in_waiting < 4:
-            pass
+            self.ser.reset_input_buffer()
+            self.__write_packet(packet)
 
-        # status = self.__read_bulk_packet(m_id)
-        status, error_code = self.__read_packet(m_id)
+            t_bus_init = time.time()
+
+            while True:
+                if self.ser.in_waiting > 6:
+                    # At least we have 0xFF, oxFF, Motor_ID, Length, Error, Data0 in the buffer
+                    break
+                if time.time() - t_bus_init > TIMEOUT_MAX:
+                    # Timeout prevention if communication error starts occuring
+                    print("[PyBEAR | WARNING] :: Status response timed out. Re-sending the same packet.")
+                    self.ser.reset_input_buffer()
+                    self.__write_packet(packet)
+                    t_bus_init = time.time()
+
+            status, error_code = self.__read_packet(m_id)
+            if error_code:
+                # checksum was right
+                break
+            else:
+                # Corrupted data prevention if checksum is wrong
+                # checksum was wrong and __read_packet() returned None
+                print("[PyBEAR | WARNING] :: Data corrupted. Re-sending the same packet.")
 
         # Place holder for multiple reads later.
         # read_val = status[3]
@@ -322,7 +380,7 @@ class PKT(object):
             return self.__hex_to_float32(status), error_code
         elif data_type == 'u32':
             # return status[5]
-            return status[0], error_code
+            return __hex_to_int32(status), error_code
 
     # def __bulk_communication_save(self,):
     #
@@ -462,14 +520,14 @@ class PKT(object):
 
         return self.__bulk_communication(m_ids, read_addr_list, write_addr_list, write_data)
 
-    def read_cfg_data(self, m_id, add_list):
+    def read_cfg_data(self, m_id, address):
         """
         This command is to read data from the configuration registers.
         """
-        if add_list not in CFG_REG.UINT_REG:
-            return self.__read_data(m_id, add_list, reg_type='cfg', data_type='f32')
+        if address not in CFG_REG.UINT_REG:
+            return self.__read_data(m_id, address, reg_type='cfg', data_type='f32')
         else:
-            return self.__read_data(m_id, add_list, reg_type='cfg', data_type='u32')
+            return self.__read_data(m_id, address, reg_type='cfg', data_type='u32')
 
     def read_bulk_cfg_data(self, argv):
         """
@@ -540,7 +598,8 @@ class PKT(object):
 
     # ===== Utility functions
     def __packet_generator(self, m_id, length, instruction, param_n, data, checksum):
-        if isinstance(param_n, list) and len(param_n) > 1:
+        # if isinstance(param_n, list) and len(param_n) > 1:
+        if isinstance(param_n, list):
             if data is None:
                 l = tuple([0xFF, 0xFF, m_id, length, instruction] + param_n + [checksum])
             else:
@@ -577,6 +636,15 @@ class PKT(object):
                 tmpval.append(struct.unpack('<f', self.sustr_loop_adapt(idx, val))[0])
         else:
             tmpval = struct.unpack('<f', self.sustr_adapt(val))[0]
+        return tmpval
+
+    def __hex_to_int32(self, val):
+        if len(val) > 4:
+            tmpval = []
+            for idx in range(0, len(val), 4):
+                tmpval.append(val[idx]|val[idx+1]<<8|val[idx+2]<<16|val[idx+3]<<24)
+        else:
+            tmpval = val[0]|val[1]<<8|val[2]<<16|val[3]<<24
         return tmpval
 
     def chksum(self, m_id, length, instruction, param_n):

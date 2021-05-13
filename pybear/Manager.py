@@ -128,7 +128,7 @@ class BEAR(Packet.PKT):
     def get_i_gain_id(self, *argv):
         return [self.read_cfg_data(argv[idx], CFG_REG.I_GAIN_ID) for idx in range(len(argv))]
 
-    def set_i_gain_id(self,*argv):
+    def set_i_gain_id(self, *argv):
         self.multi_write_cfg_data(CFG_REG.I_GAIN_ID, argv)
 
     def get_d_gain_id(self, *argv):
@@ -358,7 +358,12 @@ class BEAR(Packet.PKT):
     #     return val
 
     def get_bulk_status(self, *argv):
-        return [self.read_bulk_status_data(argv[idx]) for idx in range(len(argv))]
+        """
+        Read multiple status registers from a single motor in one packet.
+        Multiple target motors can be visited but goes through them one-by-one
+        argv = [ID, reg1, reg2 ...], [ID, reg1, reg2 ...] ...
+        """
+        return [self.read_bulk_status_data(data) for data in argv]
 
     def set_bulk_status(self, *argv):
         self.multi_write_bulk_status_data(argv)
