@@ -275,10 +275,22 @@ class BEAR(Packet.PKT):
         self.multi_write_cfg_data(CFG_REG.TEMP_LIMIT_HIGH, argv)
 
     def get_bulk_config(self, *argv):
+        """
+        Read multiple config registers from a single motor in one packet.
+        Multiple target motors can be visited but goes through them one-by-one
+        argv = (ID, reg1, reg2 ...), (ID, reg1, reg2 ...) ...
+        """
         return [self.read_bulk_cfg_data(argv[idx]) for idx in range(len(argv))]
 
     def set_bulk_config(self, *argv):
-        self.multi_write_bulk_cfg_data(argv)
+        """
+        Write to multiple config registers on a single motor in one packet.
+        Multiple target motors can be visited but goes through them one-by-one
+        argv = (ID, reg1, data1, reg2 data2...), (ID, reg1, data1 ...) ...
+        """
+        for data in argv:
+            self.write_bulk_cfg_data(data[0], data[1:])
+
 
     # =================================================================================================================
     # ===== Status Registers
@@ -361,12 +373,18 @@ class BEAR(Packet.PKT):
         """
         Read multiple status registers from a single motor in one packet.
         Multiple target motors can be visited but goes through them one-by-one
-        argv = [ID, reg1, reg2 ...], [ID, reg1, reg2 ...] ...
+        argv = (ID, reg1, reg2 ...), (ID, reg1, reg2 ...) ...
         """
         return [self.read_bulk_status_data(data) for data in argv]
 
     def set_bulk_status(self, *argv):
-        self.multi_write_bulk_status_data(argv)
+        """
+        Write to multiple status registers on a single motor in one packet.
+        Multiple target motors can be visited but goes through them one-by-one
+        argv = (ID, reg1, data1, reg2 data2...), (ID, reg1, data1 ...) ...
+        """
+        for data in argv:
+            self.write_bulk_status_data(data[0], data[1:])
 
     def bulk_read(self, m_ids, registers):
         return self.bulk_comm(m_ids, registers, [], [])

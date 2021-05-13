@@ -121,6 +121,9 @@ class PKT(object):
         pass
 
     def __write_data(self, m_id, address, data, reg_type=None):
+        """
+        Write to singel register
+        """
         if reg_type == 'cfg':
             instruction = INSTRUCTION.WRITE_CFG
         elif reg_type == 'stat':
@@ -143,11 +146,11 @@ class PKT(object):
         # Write packet
         self.__write_packet(packet)
 
-    def write_status_data(self, m_id, add_list, data):
+    def write_status_data(self, m_id, address, data):
         """
-        This command is to write data to the status registers.
+        This command is to write data to single status register.
         """
-        self.__write_data(m_id, add_list, data, reg_type='stat')
+        self.__write_data(m_id, address, data, reg_type='stat')
 
     def multi_write_status_data(self, add, data):
         """
@@ -157,11 +160,11 @@ class PKT(object):
         for idx in range(len(data)):
             self.write_status_data(data[idx][0], add, data[idx][1])
 
-    def write_cfg_data(self, m_id, add_list, data):
+    def write_cfg_data(self, m_id, address, data):
         """
-        This command is to write data to the configuration registers.
+        This command is to write data to single configuration register.
         """
-        self.__write_data(m_id, add_list, data, reg_type='cfg')
+        self.__write_data(m_id, address, data, reg_type='cfg')
 
     def multi_write_cfg_data(self, add, data):
         """
@@ -179,12 +182,12 @@ class PKT(object):
         """
         self.__write_bulk_data(m_id, adpair, reg_type='cfg')
 
-    def multi_write_bulk_cfg_data(self, argv):
-        """
-        Convenient loop function for writing to multiple motors with bulk writes to registers.
-        """
-        for idx in range(len(argv)):
-            self.write_bulk_cfg_data(argv[idx][0], argv[idx][1:])
+    # def multi_write_bulk_cfg_data(self, argv):
+    #     """
+    #     Convenient loop function for writing to multiple motors with bulk writes to registers.
+    #     """
+    #     for idx in range(len(argv)):
+    #         self.write_bulk_cfg_data(argv[idx][0], argv[idx][1:])
 
     def write_bulk_status_data(self, m_id, adpair):
         """
@@ -193,13 +196,6 @@ class PKT(object):
         adpair: ('address', data) pairs
         """
         self.__write_bulk_data(m_id, adpair, reg_type='stat')
-
-    def multi_write_bulk_status_data(self, argv):
-        """
-        Convenient loop function for writing to multiple motors with bulk writes to registers.
-        """
-        for idx in range(len(argv)):
-            self.write_bulk_status_data(argv[idx][0], argv[idx][1:])
 
     def __write_bulk_data(self, m_id, adpair, reg_type=None):
         if reg_type == 'cfg':
