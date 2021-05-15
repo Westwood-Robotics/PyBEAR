@@ -1,10 +1,12 @@
 # PyBEAR
 This is the Python SDK for the Westwood Robotics actuator module BEAR (Back-drivable Electromechanical Actuator for Robotics).
 
-Current version: 0.0.4
+Current version: 0.0.5
 
 ### Contact
-Email: info@westwoodrobotics.net
+Website: www.westwoodrobotics.io
+
+Email: info@westwoodrobotics.io
 
 ### Notes
 It is advised to use the Boosted USB2BEAR/USB2RoMeLa device for maximum speed.
@@ -63,4 +65,7 @@ Othewise, install the missing package(s).
 
 ## SDK Manual
 Download the latest SDK Manual from www.westwoodrobotics.io for detailed instructions, helpful tips and various examples.
+
+For detailed examples please refer to the SDK: 
+https://westwoodrobotics.io/wp-content/uploads/2021/03/BEAR_SDK_Manual_EN_0.2.2.pdf
 
