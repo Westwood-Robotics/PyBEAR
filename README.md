@@ -4,7 +4,9 @@ This is the Python SDK for the Westwood Robotics actuator module BEAR (Back-driv
 Current version: 0.0.5
 
 ### Contact
-Email: info@westwoodrobotics.net
+Website: www.westwoodrobotics.io
+
+Email: info@westwoodrobotics.io
 
 ### Notes
 It is advised to use the Boosted USB2BEAR/USB2RoMeLa device for maximum speed.
@@ -68,4 +70,7 @@ bear.set_mode(1,3)
 # Apply Direct Force D gain
 bear.set_d_gain_direct_force((1,0.1))
 ```
+
+For detailed examples please refer to the SDK: 
+https://westwoodrobotics.io/wp-content/uploads/2021/03/BEAR_SDK_Manual_EN_0.2.2.pdf
 

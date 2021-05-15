@@ -24,8 +24,10 @@ __date__ = "Jan. 01, 2020"
 __version__ = "0.0.2"
 __status__ = "Prototype"
 
-TIMEOUT_MAX = 0.001  # In seconds
-PING_TIMEOUT = 2*TIMEOUT_MAX
+TIMEOUT_DEFAULT = 0.001  # In seconds
+BULK_TIMEOUT_DEFAULT = 0.001  # In seconds
+PING_TIMEOUT = 2*TIMEOUT_DEFAULT
+BULK_COMM_RETRIES = 3  # set this number to change how many times PyBEAR will try to resend the packet
 
 #
 # TIMEOUT_MAX = 0.000125 # In seconds
