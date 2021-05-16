@@ -68,6 +68,5 @@ Othewise, install the missing package(s).
 ## SDK Manual
 Download the latest SDK Manual from www.westwoodrobotics.io for detailed instructions, helpful tips and various examples.
 
-For detailed examples please refer to the SDK: 
-https://westwoodrobotics.io/wp-content/uploads/2021/03/BEAR_SDK_Manual_EN_0.2.2.pdf
+For detailed examples please refer to the SDK: https://westwoodrobotics.io/support/
 
