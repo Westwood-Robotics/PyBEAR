@@ -770,12 +770,15 @@ class PKT(object):
         return retval
 
     def __hex_to_float32(self, val):
-        if len(val) > 4:
-            tmpval = []
-            for idx in range(0, len(val), 4):
-                tmpval.append(struct.unpack('<f', self.sustr_loop_adapt(idx, val))[0])
-        else:
-            tmpval = struct.unpack('<f', self.sustr_adapt(val))[0]
+        # if len(val) > 4:
+        #     tmpval = []
+        #     for idx in range(0, len(val), 4):
+        #         tmpval.append(struct.unpack('<f', self.sustr_loop_adapt(idx, val))[0])
+        # else:
+        #     tmpval = struct.unpack('<f', self.sustr_adapt(val))[0]
+        tmpval = []
+        for idx in range(0, len(val), 4):
+            tmpval.append(struct.unpack('<f', self.sustr_loop_adapt(idx, val))[0])
         return tmpval
 
     def __hex_to_int32(self, val):

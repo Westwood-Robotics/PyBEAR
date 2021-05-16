@@ -19,7 +19,7 @@ from distutils.core import setup
 
 setup(
         name='PyBEAR',
-        version='0.0.6',
+        version='0.1.0',
         author='Westwood Robotics Corporation',
         author_email='info@westwoodrobotics.io',
         license='Apache License, Version 2.0',
