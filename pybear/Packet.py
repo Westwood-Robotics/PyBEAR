@@ -296,7 +296,7 @@ class PKT(object):
             return self.__hex_to_float32(status), error_code
         elif data_type == 'u32':
             # return status[0]|status[1]<<8|status[2]<<16|status[3]<<24, error_code
-            return __hex_to_int32(status), error_code
+            return self.__hex_to_int32(status), error_code
 
 
     # def __read_bulk_data(self, m_id, add_list, reg_type=None, data_type=None):
@@ -387,7 +387,7 @@ class PKT(object):
             return self.__hex_to_float32(status), error_code
         elif data_type == 'u32':
             # return status[5]
-            return __hex_to_int32(status), error_code
+            return self.__hex_to_int32(status), error_code
 
     # def __bulk_communication_save(self,):
     #
