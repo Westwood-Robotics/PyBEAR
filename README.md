@@ -1,7 +1,7 @@
 # PyBEAR
 This is the Python SDK for the Westwood Robotics actuator module BEAR (Back-drivable Electromechanical Actuator for Robotics).
 
-Current version: 0.0.5
+Current version: 0.0.6
 
 In this version, when returning only one register per BEAR, the return format is [[data, error], ...]; when returning more than one registers per BEAR, the return format is [[[data1, data2 ...], error], [[data1, data2 ...], error] ...]
 
