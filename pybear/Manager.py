@@ -444,8 +444,10 @@ class BEAR(Packet.PKT):
 
         Parameters
         ----------
-        m_ids : tuple of IDs
-        read_registers : tuple of regirsters to read
+        m_ids
+            list of IDs
+        read_registers
+            list of regirsters to read
         """
         return self.bulk_comm(m_ids, read_registers, [], [])
     
@@ -455,14 +457,32 @@ class BEAR(Packet.PKT):
 
         Parameters
         ----------
-        m_ids : tuple of IDs
-        write_registers : tuple of regirsters to write to
-        write_data : tuple of data to write
+        m_ids
+            list of IDs
+        write_registers
+            list of regirsters to write to
+        write_data
+            list of data-list to write [[ID1-data1, ID1-data2 ...],
+                                        [ID2-data1, ID2-data2 ...] ...]
+        ----------
         """
         return self.bulk_comm(m_ids, [], write_registers, write_data)
 
-    def bulk_read_write(self, m_ids, read_reg, write_reg, commands):
+    def bulk_read_write(self, m_ids, read_reg, write_reg, write_data):
         """
         Read up to 16 registers and write to up to 16 registers
+
+        Parameters
+        ----------
+        m_ids
+            list of IDs [ID1, ID2 ...]
+        read_reg
+            list of regirsters to read [reg1, reg2 ...]
+        write_reg
+            list of regirsters to write to [reg1, reg2 ...]
+        write_data
+            list of data-list to write [[ID1-data1, ID1-data2 ...],
+                                        [ID2-data1, ID2-data2 ...] ...]
+        ----------
         """
-        return self.bulk_comm(m_ids, read_reg, write_reg, commands)
+        return self.bulk_comm(m_ids, read_reg, write_reg, write_data)
