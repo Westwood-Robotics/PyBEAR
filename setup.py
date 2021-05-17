@@ -23,7 +23,6 @@ setup(
         author='Westwood Robotics Corporation',
         author_email='info@westwoodrobotics.io',
         license='Apache License, Version 2.0',
-        url='https://github.com/Westwood-Robotics/PyBEAR',
         packages=['pybear'],
 	icense='Apache 2.0',
 	description='BEAR SDK python package',
