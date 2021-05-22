@@ -665,7 +665,7 @@ class PKT(object):
             for write_add in write_registers:
                 write_addr_list.append(STAT_REG_DIC[write_add])
 
-        return self.__bulk_communication(m_ids, read_addr_list, write_addr_list, write_data)
+        return self.__bulk_communication(m_ids, read_addr_list, write_addr_list, write_data, error_mode)
 
     def read_cfg_data(self, m_id, address):
         """
