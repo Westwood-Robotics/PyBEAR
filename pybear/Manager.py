@@ -438,7 +438,7 @@ class BEAR(Packet.PKT):
         for data in argv:
             self.write_bulk_status_data(data[0], data[1:])
 
-    def bulk_read(self, m_ids, read_registers):
+    def bulk_read(self, m_ids, read_registers, error_mode = 0):
         """
         Up to 16 registers
 
@@ -448,8 +448,11 @@ class BEAR(Packet.PKT):
             list of IDs
         read_registers
             list of regirsters to read
+        error_mode
+            0(default): return[None, -99] for BEAR with corrupted data;
+            1: return None as long as there is any error
         """
-        return self.bulk_comm(m_ids, read_registers, [], [])
+        return self.bulk_comm(m_ids, read_registers, [], [], error_mode)
     
     def bulk_write(self, m_ids, write_registers, write_data):
         """
@@ -468,7 +471,7 @@ class BEAR(Packet.PKT):
         """
         return self.bulk_comm(m_ids, [], write_registers, write_data)
 
-    def bulk_read_write(self, m_ids, read_reg, write_reg, write_data):
+    def bulk_read_write(self, m_ids, read_reg, write_reg, write_data, error_mode = 0):
         """
         Read up to 16 registers and write to up to 16 registers
 
@@ -483,6 +486,9 @@ class BEAR(Packet.PKT):
         write_data
             list of data-list to write [[ID1-data1, ID1-data2 ...],
                                         [ID2-data1, ID2-data2 ...] ...]
+        error_mode
+            0(default): return[None, -99] for BEAR with corrupted data;
+            1: return None as long as there is any error
         ----------
         """
-        return self.bulk_comm(m_ids, read_reg, write_reg, write_data)
+        return self.bulk_comm(m_ids, read_reg, write_reg, write_data, error_mode)
