@@ -614,8 +614,8 @@ class PKT(object):
                                 print("[PyBEAR | WARNING] :: Return data corrupted from these BEARs:", err_id)
                                 if error_mode == 1:
                                     return None
-                                else:
-                                    return bear_rtn
+                            else:
+                                return bear_rtn
 
 
         # Communication has been attempted but has failed!
