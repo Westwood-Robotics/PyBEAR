@@ -3,6 +3,8 @@ This is the Python SDK for the Westwood Robotics actuator module BEAR (Back-driv
 
 Current version: 0.1.2
 
+In this version, the return format is always [[[data1, data2 ...], error], [[data1, data2 ...], error] ...] no matter if returning only one register or more per BEAR.
+
 ### Contact
 Website: www.westwoodrobotics.io
 
@@ -39,38 +41,32 @@ sudo chown -R your_username /usr/local
 sudo usermod -a -G dialout your_username
 ```
 
-2. Install dependencies.
+2. CD into PyBEAR/ directory and use pip/pip3 to install the package.
+
+Python2
 ```bash
-pip install numpy pyserial
+pip install .
 ```
 
-3. Run installation on your local Python installation or your virtual environment.
+Python3
 ```bash
-python setup.py install
+pip3 install .
 ```
+3.Make sure pyserial and numpy are installed. You can check this by running 
+```bash
+pip show pyserial numpy
+```
+or 
+```bash
+pip3 show pyserial numpy
+```
+
+Othewise, install the missing package(s).
+
 4. Enjoy!
 
-## Example
-```python
-# Import Manager from PyBEAR
-from pybear import Manager
+## SDK Manual
+Download the latest SDK Manual from www.westwoodrobotics.io for detailed instructions, helpful tips and various examples.
 
-# Create a serial port object
-bear = Manager.BEAR(port='/dev/ttyUSB0', baudrate=8000000)
-
-# Enable torque
-bear.set_torque_enable((1,1))
-
-# Enable multiple torques
-bear.set_torque_enable((1,1), (2,1))
-
-# Enable Direct Force mode
-bear.set_mode(1,3)
-
-# Apply Direct Force D gain
-bear.set_d_gain_direct_force((1,0.1))
-```
-
-For detailed examples please refer to the SDK: 
-https://westwoodrobotics.io/wp-content/uploads/2021/03/BEAR_SDK_Manual_EN_0.2.2.pdf
+For detailed examples please refer to the SDK: https://westwoodrobotics.io/support/
 

@@ -24,4 +24,8 @@ setup(
         author_email='info@westwoodrobotics.io',
         license='Apache License, Version 2.0',
         packages=['pybear'],
+	icense='Apache 2.0',
+	description='BEAR SDK python package',
+	url='https://github.com/Westwood-Robotics/PyBEAR',
+	install_requires=['pyserial']
 )
