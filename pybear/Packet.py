@@ -511,16 +511,23 @@ class PKT(object):
     #     data_ouput = np.zeros((len(m_ids), num_read_regs))
     #     return error_status, motor_status, data_ouput
 
-    def __bulk_communication(self, m_ids, read_addr, write_addr, write_data):
+    def __bulk_communication(self, m_ids, read_addr, write_addr, write_data, error_mode):
         """
         CAUTION: Will not work for: ID, Mode, Baudrate, Watchdog_timeout and Torque Enable
 
         Parameters
         ----------
-        m_ids : tuple of IDs
-        read_registers : tuple of regirsters to read
-        write_registers : tuple of regirsters to write to
-        write_data : tuple of data to write
+        m_ids
+            tuple of IDs
+        read_registers
+            tuple of regirsters to read
+        write_registers
+            tuple of regirsters to write to
+        write_data
+            tuple of data to write
+        error_mode
+            0(default): return[None, -99] for BEAR with corrupted data;
+            1: return None as long as there is any error
         """
 
         instruction = INSTRUCTION.BULK_COMM
@@ -605,7 +612,10 @@ class PKT(object):
                                     bear_rtn.append([None, -99])
                             if len(err_id):
                                 print("[PyBEAR | WARNING] :: Return data corrupted from these BEARs:", err_id)
-                            return bear_rtn
+                                if error_mode == 1:
+                                    return None
+                            else:
+                                return bear_rtn
 
 
         # Communication has been attempted but has failed!
@@ -626,17 +636,24 @@ class PKT(object):
 
         return None
 
-    def bulk_comm(self, m_ids, read_registers, write_registers, write_data):
+    def bulk_comm(self, m_ids, read_registers, write_registers, write_data, error_mode=0):
         """
         Read and write from multiple motors in a single shot
         CAUTION: Will not work for: ID, Mode, Baudrate, Watchdog_timeout and Torque Enable
 
         Parameters
         ----------
-        m_ids : tuple of IDs
-        read_registers : tuple of regirsters to read
-        write_registers : tuple of regirsters to write to
-        write_data : tuple of data to write
+        m_ids
+            tuple of IDs
+        read_registers
+            tuple of regirsters to read
+        write_registers
+            tuple of regirsters to write to
+        write_data
+            tuple of data to write
+        error_mode
+            0(default): return[None, -99] for BEAR with corrupted data;
+            1: return None as long as there is any error
         """
         read_addr_list = []
         write_addr_list = []
@@ -648,7 +665,7 @@ class PKT(object):
             for write_add in write_registers:
                 write_addr_list.append(STAT_REG_DIC[write_add])
 
-        return self.__bulk_communication(m_ids, read_addr_list, write_addr_list, write_data)
+        return self.__bulk_communication(m_ids, read_addr_list, write_addr_list, write_data, error_mode)
 
     def read_cfg_data(self, m_id, address):
         """

@@ -214,16 +214,34 @@ class BEAR(Packet.PKT):
         self.multi_write_cfg_data(CFG_REG.D_GAIN_FORCE, argv)
 
     def get_limit_id_max(self, *argv):
-        return [self.read_cfg_data(argv[idx], CFG_REG.LIMIT_ID_MAX) for idx in range(len(argv))]
+        print("This function is no longer valid.")
 
     def set_limit_id_max(self, *argv):
-        self.multi_write_cfg_data(CFG_REG.LIMIT_ID_MAX, argv)
+        print("This function is no longer valid.")
+
+    def get_limit_acc_max(self, *argv):
+        return [self.read_cfg_data(argv[idx], CFG_REG.LIMIT_ACC_MAX) for idx in range(len(argv))]
+
+    def set_limit_acc_max(self, *argv):
+        self.multi_write_cfg_data(CFG_REG.LIMIT_ACC_MAX, argv)
 
     def get_limit_iq_max(self, *argv):
-        return [self.read_cfg_data(argv[idx], CFG_REG.LIMIT_IQ_MAX) for idx in range(len(argv))]
+        """
+        This function is depreciated. Use get_limit_i_max() instead.
+        """
+        return [self.read_cfg_data(argv[idx], CFG_REG.LIMIT_I_MAX) for idx in range(len(argv))]
 
     def set_limit_iq_max(self, *argv):
-        self.multi_write_cfg_data(CFG_REG.LIMIT_IQ_MAX, argv)
+        """
+        This function is depreciated. Use set_limit_i_max() instead.
+        """
+        self.multi_write_cfg_data(CFG_REG.LIMIT_I_MAX, argv)
+
+    def get_limit_i_max(self, *argv):
+        return [self.read_cfg_data(argv[idx], CFG_REG.LIMIT_I_MAX) for idx in range(len(argv))]
+
+    def set_limit_i_max(self, *argv):
+        self.multi_write_cfg_data(CFG_REG.LIMIT_I_MAX, argv)
 
     def get_limit_velocity_max(self,*argv):
         return [self.read_cfg_data(argv[idx], CFG_REG.LIMIT_VEL_MAX) for idx in range(len(argv))]
@@ -336,11 +354,6 @@ class BEAR(Packet.PKT):
     def set_torque_enable(self, *argv):
         self.multi_write_status_data(STAT_REG.TORQUE_ENABLE, argv)
 
-    # Not implemented yet
-    # def get_homing_complete(self, m_id):
-    #     val = self.read_status_data(m_id, STAT_REG.HOMING_COMPLETE)
-    #     return val
-
     def get_goal_id(self, *argv):
         return [self.read_status_data(argv[idx], STAT_REG.GOAL_ID) for idx in range(len(argv))]
 
@@ -438,7 +451,7 @@ class BEAR(Packet.PKT):
         for data in argv:
             self.write_bulk_status_data(data[0], data[1:])
 
-    def bulk_read(self, m_ids, read_registers):
+    def bulk_read(self, m_ids, read_registers, error_mode = 0):
         """
         Up to 16 registers
 
@@ -448,8 +461,11 @@ class BEAR(Packet.PKT):
             list of IDs
         read_registers
             list of regirsters to read
+        error_mode
+            0(default): return[None, -99] for BEAR with corrupted data;
+            1: return None as long as there is any error
         """
-        return self.bulk_comm(m_ids, read_registers, [], [])
+        return self.bulk_comm(m_ids, read_registers, [], [], error_mode)
     
     def bulk_write(self, m_ids, write_registers, write_data):
         """
@@ -468,7 +484,7 @@ class BEAR(Packet.PKT):
         """
         return self.bulk_comm(m_ids, [], write_registers, write_data)
 
-    def bulk_read_write(self, m_ids, read_reg, write_reg, write_data):
+    def bulk_read_write(self, m_ids, read_reg, write_reg, write_data, error_mode = 0):
         """
         Read up to 16 registers and write to up to 16 registers
 
@@ -483,6 +499,9 @@ class BEAR(Packet.PKT):
         write_data
             list of data-list to write [[ID1-data1, ID1-data2 ...],
                                         [ID2-data1, ID2-data2 ...] ...]
+        error_mode
+            0(default): return[None, -99] for BEAR with corrupted data;
+            1: return None as long as there is any error
         ----------
         """
-        return self.bulk_comm(m_ids, read_reg, write_reg, write_data)
+        return self.bulk_comm(m_ids, read_reg, write_reg, write_data, error_mode)

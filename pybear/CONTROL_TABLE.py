@@ -71,8 +71,9 @@ class CFG_REG:
     P_GAIN_FORCE = 0x10
     I_GAIN_FORCE = 0x11
     D_GAIN_FORCE = 0x12
-    LIMIT_ID_MAX = 0x13
-    LIMIT_IQ_MAX = 0x14
+    # Limits
+    LIMIT_ACC_MAX = 0x13
+    LIMIT_I_MAX = 0x14
     LIMIT_VEL_MAX = 0x15
     LIMIT_POS_MIN = 0x16
     LIMIT_POS_MAX = 0x17
@@ -105,8 +106,9 @@ CFG_REG_DIC = {'id': CFG_REG.ID,
                'p_gain_direct_force': CFG_REG.P_GAIN_FORCE,
                'i_gain_direct_force': CFG_REG.I_GAIN_FORCE,
                'd_gain_direct_force': CFG_REG.D_GAIN_FORCE,
-               'limit_id_max': CFG_REG.LIMIT_ID_MAX,
-               'limit_iq_max': CFG_REG.LIMIT_IQ_MAX,
+               'limit_acc_max': CFG_REG.LIMIT_ACC_MAX,
+               'limit_i_max': CFG_REG.LIMIT_I_MAX,
+               'limit_iq_max': CFG_REG.LIMIT_I_MAX,
                'limit_velocity_max': CFG_REG.LIMIT_VEL_MAX,
                'limit_position_min': CFG_REG.LIMIT_POS_MIN,
                'limit_position_max': CFG_REG.LIMIT_POS_MAX,
