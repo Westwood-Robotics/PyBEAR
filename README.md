@@ -1,7 +1,7 @@
 # PyBEAR
 This is the Python SDK for the Westwood Robotics actuator module BEAR (Back-drivable Electromechanical Actuator for Robotics).
 
-Current version: 0.1.1
+Current version: 0.1.2
 
 ### Contact
 Website: www.westwoodrobotics.io
