@@ -18,12 +18,12 @@
 ################################################################################
 
 __author__ = "Westwood Robotics Corporation"
-__email__ = "info@westwoodrobotics.net"
+__email__ = "info@westwoodrobotics.io"
 __copyright__ = "Copyright 2020 Westwood Robotics"
 __date__ = "Jan. 01, 2020"
 
-__version__ = "0.0.1"
-__status__ = "Prototype"
+__version__ = "0.1.2"
+__status__ = "Production"
 
 class CRC:
 	TABLE = ( 

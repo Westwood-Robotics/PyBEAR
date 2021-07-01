@@ -1,10 +1,10 @@
 #!usr/bin/env python
 __author__ = "Xiaoguang Zhang"
-__email__ = "xzhang@westwoodrobotics.net"
+__email__ = "xzhang@westwoodrobotics.io"
 __copyright__ = "Copyright 2020 Westwood Robotics"
 __date__ = "Jan 8, 2020"
-__version__ = "0.0.1"
-__status__ = "Prototype"
+__version__ = "0.1.2"
+__status__ = "Production"
 
 # -----------------------------
 # Simple code to set ID for BEAR
