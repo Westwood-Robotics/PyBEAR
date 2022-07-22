@@ -3,7 +3,7 @@ __author__ = "Xiaoguang Zhang"
 __email__ = "xzhang@westwoodrobotics.io"
 __copyright__ = "Copyright 2020 Westwood Robotics"
 __date__ = "Jan 8, 2021"
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __status__ = "Production"
 
 # Ping and search for available BEARs
@@ -21,7 +21,7 @@ found = False
 for i in id_range:
     m_id = i
     print("Pinging BEAR with ID %d" % m_id)
-    data = bear.ping(m_id)
+    data = bear.ping(m_id)[0]
     if data:
         print("Found BEAR with ID %d." % m_id)
         found = True
