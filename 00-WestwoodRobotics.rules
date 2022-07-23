@@ -9,6 +9,6 @@
 # Use udevadm to get detailed info of your device.
 # For example, if your device is ttyUSB0, you can try: 'udevadm info --attribute-walk -n /dev/ttyUSB0'
 
-SUBSYSTEM=="tty", ATTRS{product}=="USB2RoMeLa_Boosted", SYMLINK="%s{serial}"
-SUBSYSTEM=="tty", ATTRS{product}=="USB2BEAR_Boosted", SYMLINK="%s{serial}"
+SUBSYSTEM=="tty", ATTRS{product}=="USB2RoMeLa_Boosted", ACTION=="add", SYMLINK="%s{serial}"
+SUBSYSTEM=="tty", ATTRS{product}=="USB2BEAR_Boosted", ACTION=="add", SYMLINK="%s{serial}"
 
