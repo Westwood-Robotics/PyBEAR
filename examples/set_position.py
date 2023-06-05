@@ -18,9 +18,9 @@ bear = Manager.BEAR(port="/dev/ttyUSB0", baudrate=8000000)  # need to identify t
 
 m_id = 1  # BEAR ID (default is 1)
 
-p_gain = 5    # Set P gain as spring stiffness
-d_gain = 1    # Set D gain as damper strength
-i_gain = 0    # I gain is usually not needed
+p_gain = 5.0  # Set P gain as spring stiffness
+d_gain = 0.2  # Set D gain as damper strength
+i_gain = 0.0  # I gain is usually not needed
 iq_max = 1.5  # Max iq
 
 BEAR_connected = bear.ping(m_id)[0]
@@ -42,10 +42,10 @@ if not error:
     bear.set_i_gain_id((m_id, 0.02))
     bear.set_d_gain_id((m_id, 0))
 
-    # Clear PID direct force
-    bear.set_p_gain_force((m_id, 0))
-    bear.set_i_gain_force((m_id, 0))
-    bear.set_d_gain_force((m_id, 0))
+    # PID position mode
+    bear.set_p_gain_position((m_id, p_gain))
+    bear.set_i_gain_position((m_id, i_gain))
+    bear.set_d_gain_position((m_id, d_gain))
 
     # Put into position mode
     bear.set_mode((m_id, 2))
