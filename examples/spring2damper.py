@@ -23,7 +23,7 @@ p_gain = 5  # Set P gain as the K of spring
 d_gain = 2  # Set D gain as damper strength
 iq_max = 1.5  # Max iq
 
-if not(bear.ping(m_id)):
+if not(bear.ping(m_id)[0]):
     # BEAR is offline
     print("BEAR is offline. Check power and communication.")
     error = True
@@ -54,12 +54,12 @@ if not error:
     # Put bar in middle
     # usr = input("Please move the bar to upright position, then press enter to continue.")
     # Get home position
-    home = bear.get_present_position(m_id)[0][0]
+    home = bear.get_present_position(m_id)[0][0][0]
     print("Demo started.")
     run = True
     while run:
         os.system('cls' if os.name == 'nt' else 'clear')
-        pos = bear.get_present_position(m_id)[0][0]
+        pos = bear.get_present_position(m_id)[0][0][0]
         if abs(pos - home) < 0.78539816339:  # If distance between present_pos and home is lower than 45 deg
             # Disable and do nothing
             print("BEAR in free range.")
