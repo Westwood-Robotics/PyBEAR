@@ -43,22 +43,13 @@ sudo chown -R your_username /usr/local
 sudo usermod -a -G dialout your_username
 ```
 
-2. CD into PyBEAR/ directory and use pip/pip3 to install the package.
+2. CD into PyBEAR/ directory and use pip3 to install the package(Python3).
 
-Python2
-```bash
-pip install .
-```
-
-Python3
 ```bash
 pip3 install .
 ```
-3.Make sure pyserial and numpy are installed. You can check this by running 
-```bash
-pip show pyserial numpy
-```
-or 
+3.Make sure pyserial and numpy are installed. You can check this by running: 
+
 ```bash
 pip3 show pyserial numpy
 ```
