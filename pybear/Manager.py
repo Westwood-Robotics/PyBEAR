@@ -1,8 +1,8 @@
 #!usr/bin/env python
 __author__    = "Westwood Robotics Corporation"
 __email__     = "info@westwoodrobotics.io"
-__copyright__ = "Copyright 2025 Westwood Robotics Corporation"
-__date__      = "July 29, 2025"
+__copyright__ = "Copyright 2026 Westwood Robotics Corporation"
+__date__      = "July 24, 2026"
 __project__   = "PyBEAR"
 __version__   = "0.1.3"
 __status__    = "Production"
@@ -411,7 +411,7 @@ class BEAR(Packet.PKT):
         return: list of status data, e.g., [([read_data11, read_data12], error1), ([read_data21, read_data22], error2)]
         """
         read_stat_data_list, error_list = self._bulk_read_write_stat(bear_list, read_stat_name_list, [], [])
-        return [(read_stat_data_list[idx], error_list[idx]) for idx in bear_list]
+        return [(read_stat_data_list[idx], error_list[idx]) for idx in range(len(bear_list))]
 
     def bulk_write(self, bear_list, write_stat_name_list, data_list):
         """
@@ -425,7 +425,7 @@ class BEAR(Packet.PKT):
         return: list of status data, e.g., [([read_data11, read_data12], error1), ([read_data21, read_data22], error2)]
         """
         read_stat_data_list, error_list = self._bulk_read_write_stat(bear_list, read_stat_name_list, write_stat_name_list, write_stat_data_list)
-        return [(read_stat_data_list[idx], error_list[idx]) for idx in bear_list]
+        return [(read_stat_data_list[idx], error_list[idx]) for idx in range(len(bear_list))]
     
     def get_register(self, *argv):
         """
