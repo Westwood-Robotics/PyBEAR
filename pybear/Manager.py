@@ -431,14 +431,14 @@ class BEAR(Packet.PKT):
         """
         Read multiple registers from multiple BEARs in one packet but goes through them one-by-one, e.g. get_reg((id1, reg11, reg12, ...), (id2, reg21, reg22, ...), ...)
         """
-        return [self.single_read(data[0], [data[1:]]) for data in argv]
+        return [self.single_read(data[0], data[1:]) for data in argv]
     
     def set_register(self, *argv):
         """
         Write to multiple registers on multiple BEARs in one packet but goes through them one-by-one, e.g., set_reg((id1, reg11, data11, reg12, data12, ...), (id2, reg21, data21, reg22, data22, ...), ...)
         """
         for data in argv:
-            self.single_write(data[0], [data[1::2]], [data[2::2]])
+            self.single_write(data[0], data[1::2], data[2::2])
 
     def decode_error(self, error_code):
         """
