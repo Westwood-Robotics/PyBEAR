@@ -4,7 +4,7 @@ __email__     = "info@westwoodrobotics.io"
 __copyright__ = "Copyright 2026 Westwood Robotics Corporation"
 __date__      = "July 29, 2025"
 __project__   = "PyBEAR"
-__version__   = "0.1.3"
+__version__   = "1.0.0"
 __status__    = "Production"
 
 '''
@@ -57,6 +57,10 @@ REGISTER['REG_TYPE']['max_voltage']        = 'cfg'
 REGISTER['REG_TYPE']['watchdog_timeout']   = 'cfg'
 REGISTER['REG_TYPE']['temp_limit_low']     = 'cfg'
 REGISTER['REG_TYPE']['temp_limit_high']    = 'cfg'
+REGISTER['REG_TYPE']['return_delay']       = 'cfg'
+REGISTER['REG_TYPE']['torque_comp']        = 'cfg'
+REGISTER['REG_TYPE']['afc_en']             = 'cfg'
+REGISTER['REG_TYPE']['friction_comp']      = 'cfg'
 
 REGISTER['ADDRESS']['id']                 = 0x00
 REGISTER['ADDRESS']['mode']               = 0x01
@@ -87,6 +91,11 @@ REGISTER['ADDRESS']['max_voltage']        = 0x19
 REGISTER['ADDRESS']['watchdog_timeout']   = 0x1A
 REGISTER['ADDRESS']['temp_limit_low']     = 0x1B
 REGISTER['ADDRESS']['temp_limit_high']    = 0x1C
+# 0x1D is reserved for the firmware's internal multi-turn offset.
+REGISTER['ADDRESS']['return_delay']       = 0x1E
+REGISTER['ADDRESS']['torque_comp']        = 0x1F
+REGISTER['ADDRESS']['afc_en']             = 0x20
+REGISTER['ADDRESS']['friction_comp']      = 0x21
 
 REGISTER['DATA_TYPE']['id']                 = 'u32'
 REGISTER['DATA_TYPE']['mode']               = 'u32'
@@ -117,6 +126,10 @@ REGISTER['DATA_TYPE']['max_voltage']        = 'f32'
 REGISTER['DATA_TYPE']['watchdog_timeout']   = 'u32'
 REGISTER['DATA_TYPE']['temp_limit_low']     = 'f32'
 REGISTER['DATA_TYPE']['temp_limit_high']    = 'f32'
+REGISTER['DATA_TYPE']['return_delay']       = 'u32'
+REGISTER['DATA_TYPE']['torque_comp']        = 'u32'
+REGISTER['DATA_TYPE']['afc_en']             = 'u32'
+REGISTER['DATA_TYPE']['friction_comp']      = 'u32'
 
 # Status
 REGISTER['REG_TYPE']['torque_enable']          = 'stat'

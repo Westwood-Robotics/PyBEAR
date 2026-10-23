@@ -4,7 +4,7 @@ __email__     = "info@westwoodrobotics.io"
 __copyright__ = "Copyright 2026 Westwood Robotics Corporation"
 __date__      = "July 29, 2025"
 __project__   = "PyBEAR"
-__version__   = "0.1.3"
+__version__   = "1.0.0"
 __status__    = "Production"
 
 '''

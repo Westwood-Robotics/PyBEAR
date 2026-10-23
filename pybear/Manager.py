@@ -4,7 +4,7 @@ __email__     = "info@westwoodrobotics.io"
 __copyright__ = "Copyright 2026 Westwood Robotics Corporation"
 __date__      = "July 24, 2026"
 __project__   = "PyBEAR"
-__version__   = "0.1.3"
+__version__   = "1.0.0"
 __status__    = "Production"
 
 '''
@@ -250,6 +250,42 @@ class BEAR(Packet.PKT):
     def set_temp_limit_high(self, *argv):
         for data in argv:
             self.single_write(data[0], ['temp_limit_high'], [data[1]])
+
+    def get_return_delay(self, *argv):
+        """Read the RS485 response delay in microseconds for each BEAR ID."""
+        return [self.single_read(data, ['return_delay']) for data in argv]
+
+    def set_return_delay(self, *argv):
+        """Set the RS485 response delay (0 to 500 microseconds)."""
+        for data in argv:
+            self.single_write(data[0], ['return_delay'], [data[1]])
+
+    def get_torque_comp(self, *argv):
+        """Read torque compensation: 0=off, 1=on, 2=calibration invalid."""
+        return [self.single_read(data, ['torque_comp']) for data in argv]
+
+    def set_torque_comp(self, *argv):
+        """Request torque compensation off (0) or on (1)."""
+        for data in argv:
+            self.single_write(data[0], ['torque_comp'], [data[1]])
+
+    def get_afc_en(self, *argv):
+        """Read AFC enable: 0=off or unavailable, 1=on."""
+        return [self.single_read(data, ['afc_en']) for data in argv]
+
+    def set_afc_en(self, *argv):
+        """Request AFC off (0) or on (1), if included in the firmware."""
+        for data in argv:
+            self.single_write(data[0], ['afc_en'], [data[1]])
+
+    def get_friction_comp(self, *argv):
+        """Read friction compensation: 0=off, 1=on, 2=calibration invalid."""
+        return [self.single_read(data, ['friction_comp']) for data in argv]
+
+    def set_friction_comp(self, *argv):
+        """Request friction compensation off (0) or on (1)."""
+        for data in argv:
+            self.single_write(data[0], ['friction_comp'], [data[1]])
         
     # =================================================================================================================
     # ===== Status Registers
