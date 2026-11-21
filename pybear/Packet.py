@@ -127,7 +127,7 @@ class PKT(object):
         c0 = 1  # try count
         while self.ser.in_waiting < 4:                # so at least we got the component packet length info
             if time.time() - t0 > self.bulk_timeout:  # if timeout
-                if c0 == self.single_try_num:         # if max try number
+                if c0 >= self.bulk_try_num:           # if max try number
                     self.print_warning(warning='max_try_num')
                     return None, None
                 self.print_warning(warning='bulk_timeout')
